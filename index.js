@@ -33,8 +33,17 @@ const PORT = 3000;
 // this is similar to server.on('request') event emitter.
 const server = http.createServer((req, res) => {
     const items = req.url.split("/")
+    
+    if(req.method === 'POST' && items[1] === 'friends') {
+        req.on("data", (data) => {
+            const friend = data.toString();
+            console.log("Request:", friend);
 
-    if(items[1] === "friends") {
+            friends.push(JSON.parse(friend));
+        })
+    }
+
+    if(req.method === 'GET' && items[1] === "friends") {
         res.statusCode = 200;
         res.setHeader("Content-Type","application/json");
 
@@ -46,7 +55,7 @@ const server = http.createServer((req, res) => {
             res.end(JSON.stringify(friends));
         }
     }
-    else if (items[1] === "messages") {
+    else if (req.method === "GEt" && items[1] === "messages") {
         res.write("<html>");
         res.write("<body>");
         res.write("<span>What are you thought on Astronomy</span>");
