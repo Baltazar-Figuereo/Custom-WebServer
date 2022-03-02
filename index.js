@@ -4,11 +4,26 @@ const proxy = {
     protocol: 'http',
     host: '185.46.212.88',
     port: 10560
-}
+};
 
 const config = {
     proxy
-}
+};
+
+const friends = [
+    {
+      id: 0,
+      name: 'Nikola Tesla',
+    },
+    {
+      id: 1,
+      name: 'Sir Isaac Newton',
+    },
+    {
+      id: 2,
+      name: 'Albert Einstein',
+    }
+];
 
 const PORT = 3000;
 
@@ -17,34 +32,31 @@ const PORT = 3000;
 
 // this is similar to server.on('request') event emitter.
 const server = http.createServer((req, res) => {
-    if(req.url === "/friends") {
-        /*
-        res.writeHead(200, {
-            'Content-Type': "application/json",
-        });
-        */
+    const items = req.url.split("/")
 
-        res.statusCode = 200
-        res.setHeader("Content-Type","application/json")
-    
-        // need to close the writable stream at the end.
-        // res.end("Hello! Sir Isaax Newton is your friend!");
-        res.end(JSON.stringify({
-                id: 1,
-                name: "Sir Issac Newton"
-        }));
+    if(items[1] === "friends") {
+        res.statusCode = 200;
+        res.setHeader("Content-Type","application/json");
+
+        if(items.length === 3) {
+            const friendIndex = Number(items[2]);
+            res.end(JSON.stringify(friends[friendIndex]))
+        }
+        else {
+            res.end(JSON.stringify(friends));
+        }
     }
-    else if (req.url === "/messages") {
-        res.write("<html></html>")
-        res.write("<body>")
-        res.write("<span>What are you thought on Astronomy</span>")
-        res.write("</body>")
-        res.write("</html>")
+    else if (items[1] === "messages") {
+        res.write("<html>");
+        res.write("<body>");
+        res.write("<span>What are you thought on Astronomy</span>");
+        res.write("</body>");
+        res.write("</html>");
         res.end();
     }
     else {
         res.statusCode = 404;
-        res.end()
+        res.end();
     }
     
 });
